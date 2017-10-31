@@ -41,7 +41,12 @@
 (re-frame/reg-event-db
  :edit-fish
  (fn [db [_ fish]]
-   (let [{id :id
-          value :name} fish
-          property (key (second fish))]
+   (let [{id :id} fish
+         value (val (second fish))
+         property (key (second fish))]
      (assoc-in db [:fishes id property] value))))
+
+(re-frame/reg-event-db
+ :add-to-order
+ (fn [db [_ id]]
+   (update-in db [:orders (keyword id)] (fnil inc 0))))

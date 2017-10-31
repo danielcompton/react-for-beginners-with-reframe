@@ -33,14 +33,31 @@
 
 ;; order
 
+(defn order-item [id quant]
+  (let [fishes (subscribe [:fishes])
+        name (get-in fishes [id :name])
+        status (get-in fishes [id :status])]
+    [:li
+     [:span quant "lbs " name]
+     [:span.price (format-price (* quant (get-in @fishes [id :price])))]]))
+
+(defn total []
+  (let [fishes (subscribe [:fishes])
+        orders (subscribe [:orders])]
+    (->> @orders
+         (remove (fn [[fish-id qty]] (= (get-in @fishes [fish-id :status]) :unavailable)))
+         (map (fn [[fish-id qty]] (* qty (get-in @fishes [fish-id :price]))))
+         (reduce +))))
+
 (defn order []
-  [:div.order-wrap
-   [:h2 "Your Order"]
-   [:ul.order
-  ;  (for [[id quant] @state/orders]
-  ;    ^{:key id} [order id quant])
-    [:li.total
-     [:strong "Total:"]  "total"]]])
+  (let [orders (subscribe [:orders])]
+    [:div.order-wrap
+     [:h2 "Your Order"]
+     [:ul.order
+      (for [[id quant] @orders]
+        ^{:key id} [order-item id quant])
+      [:li.total
+       [:strong "Total:"]  (total)]]]))
 
 ;; inventory
 
@@ -72,34 +89,39 @@
                  :on-click      #(dispatch [:add-fish fish])} "+ Add Item"]])))
 
 (defn edit-fish-form [id name price status desc image]
-  (let [fishes (subscribe [:fishes])]
+  (let [fishes (subscribe [:fishes])
+        id (keyword id)]
     [:div.fish-edit
      [:input {:type "text"
               :name "name"
               :placeholder "Fish Name"
               :value name
-              :on-change #(dispatch [:edit-fish {:id (keyword id)
-                                                 :name (-> % .-target.value)}])}]
+              :on-change #(dispatch [:edit-fish {:id id
+                                                 :name (-> % .-target .-value)}])}]
      [:input {:type "text"
               :name "price"
               :placeholder "Fish Price"
               :value price
-              :on-change #(swap! fishes assoc-in [(keyword id) :price] (-> % .-target.value))}]
+              :on-change #(dispatch [:edit-fish {:id id
+                                                 :price (-> % .-target .-value)}])}]
      [:select {:value status
                :name "status"
-               :on-change #(swap! fishes assoc-in [(keyword id) :status] (-> % .-target.value))}
+               :on-change #(dispatch [:edit-fish {:id id
+                                                  :status (-> % .-target .-value)}])}
       [:option {:value "available"} "Fresh!"]
       [:option {:value "unavailable"} "Sold Out!"]]
      [:textarea {:name "desc"
                  :placeholder "Fish Desc"
                  :value desc
-                 :on-change #(swap! fishes assoc-in [(keyword id) :desc] (-> % .-target.value))}]
+                 :on-change #(dispatch [:edit-fish {:id id
+                                                    :desc (-> % .-target .-value)}])}]
      [:input {:type "text"
               :name "image"
               :placeholder "Fish Image"
               :value image
-              :on-change #(swap! fishes assoc-in [(keyword id) :image] (-> % .-target.value))}]
-     [:button {:on-click #(dispatch swap! fishes dissoc (keyword id))} "Remove Fish"]]))
+              :on-change #(dispatch [:edit-fish {:id id
+                                                 :desc (-> % .-target .-value)}])}]
+     [:button {:on-click #(dispatch [:remove-fish id])} "Remove Fish"]]))
 
 (defn inventory []
   (let [fishes (subscribe [:fishes])]
@@ -112,9 +134,6 @@
 
 ;; fishes
 
-(defn add-to-order [orders id]
-  (swap! orders update (keyword id) (fnil inc 0)))
-
 (defn fish [id name price status desc image]
   (let [orders (subscribe [:orders])]
     [:li.menu-fish {:key id}
@@ -123,7 +142,7 @@
       [:span.price (format-price price)]]
      [:p desc]
      [:button {:disabled (= status :unavailable)
-               :on-click #(.log js/console @orders)}
+               :on-click #(dispatch [:add-to-order id])}
       (if (= status :available) "Add To Order" "Sold Out!")]]))
 
 ;; catch-of-the-day

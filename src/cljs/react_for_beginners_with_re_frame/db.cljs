@@ -3,7 +3,7 @@
 (def default-db
   {:name "re-frame"
    :fishes (sorted-map)
-   :orders {}})
+   :orders (sorted-map)})
 
 (def sample-fishes {:fish-1 {:id     "fish-1"
                              :desc   "Everyones favorite white fish. We will cut it to the size you need and ship it."
