@@ -78,7 +78,8 @@
               :name "name"
               :placeholder "Fish Name"
               :value name
-              :on-change #(swap! fishes assoc-in [(keyword id) :name] (-> % .-target.value))}]
+              :on-change #(dispatch [:edit-fish {:id (keyword id)
+                                                 :name (-> % .-target.value)}])}]
      [:input {:type "text"
               :name "price"
               :placeholder "Fish Price"
@@ -98,7 +99,7 @@
               :placeholder "Fish Image"
               :value image
               :on-change #(swap! fishes assoc-in [(keyword id) :image] (-> % .-target.value))}]
-     [:button {:on-click #(dispatch [:remove-fish (keyword id)])} "Remove Fish"]]))
+     [:button {:on-click #(dispatch swap! fishes dissoc (keyword id))} "Remove Fish"]]))
 
 (defn inventory []
   (let [fishes (subscribe [:fishes])]

@@ -17,9 +17,10 @@
    (:fishes db)))
 
 (re-frame/reg-sub
- :fish-name
- (fn [db _]
-   (get-in db [:fishes id :name]:fishes db )))
+ :edit-fish
+ (fn [db id]
+   (.log js/console id) ;; must pass keyword
+   (get-in db [:fishes id :name] )))
 
 (re-frame/reg-sub
  :orders
