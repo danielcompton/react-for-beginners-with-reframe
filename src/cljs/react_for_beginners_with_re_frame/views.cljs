@@ -3,6 +3,11 @@
             [re-frame.core :refer [subscribe dispatch]]
             [react-for-beginners-with-re-frame.subs :as subs]))
 
+;; helpers
+
+(defn format-price [price]
+  (str "$" (/ price 100)))
+
 ;; store-picker
 
 (defn store-picker []
@@ -65,13 +70,44 @@
                 :on-change      #(swap! fish assoc :image (-> % .-target .-value))}]
        [:button {:type          "button"
                  :on-click      #(dispatch [:add-fish fish])} "+ Add Item"]])))
+
+(defn edit-fish-form [id name price status desc image]
+  (let [fishes (subscribe [:fishes])]
+    [:div.fish-edit
+     [:input {:type "text"
+              :name "name"
+              :placeholder "Fish Name"
+              :value name
+              :on-change #(swap! fishes assoc-in [(keyword id) :name] (-> % .-target.value))}]
+     [:input {:type "text"
+              :name "price"
+              :placeholder "Fish Price"
+              :value price
+              :on-change #(swap! fishes assoc-in [(keyword id) :price] (-> % .-target.value))}]
+     [:select {:value status
+               :name "status"
+               :on-change #(swap! fishes assoc-in [(keyword id) :status] (-> % .-target.value))}
+      [:option {:value "available"} "Fresh!"]
+      [:option {:value "unavailable"} "Sold Out!"]]
+     [:textarea {:name "desc"
+                 :placeholder "Fish Desc"
+                 :value desc
+                 :on-change #(swap! fishes assoc-in [(keyword id) :desc] (-> % .-target.value))}]
+     [:input {:type "text"
+              :name "image"
+              :placeholder "Fish Image"
+              :value image
+              :on-change #(swap! fishes assoc-in [(keyword id) :image] (-> % .-target.value))}]
+     [:button {:on-click #(dispatch [:remove-fish (keyword id)])} "Remove Fish"]]))
+
 (defn inventory []
-  [:div
-   [:h2 "Inventory"]
-  ; (for [{:keys [id name price status desc image]} (vals @state/fishes)]
-  ;   ^{:key id} [inventory id name price status image desc])
-   [add-fish-form]
-   [:button {:on-click #(dispatch [:load-sample-fishes] )} "Load Sample Fishes"]])
+  (let [fishes (subscribe [:fishes])]
+    [:div
+     [:h2 "Inventory"]
+     (for [{:keys [id name price status desc image]} (vals @fishes)]
+       ^{:key id} [edit-fish-form id name price status image desc])
+     [add-fish-form]
+     [:button {:on-click #(dispatch [:load-sample-fishes] )} "Load Sample Fishes"]]))
 
 ;; fishes
 
@@ -83,7 +119,7 @@
     [:li.menu-fish {:key id}
      [:img {:src image :alt name}]
      [:h3.fish-name name
-      [:span.price price]]
+      [:span.price (format-price price)]]
      [:p desc]
      [:button {:disabled (= status :unavailable)
                :on-click #(.log js/console @orders)}

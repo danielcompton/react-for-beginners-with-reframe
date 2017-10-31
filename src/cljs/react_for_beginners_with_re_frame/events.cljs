@@ -33,3 +33,12 @@
                                           :image image
                                           :desc desc}))))
 
+(re-frame/reg-event-db
+ :remove-fish
+ (fn [db [_ id]]
+   (update-in db [:fishes] dissoc id)))
+
+(re-frame/reg-event-db
+ :edit-fish
+ (fn [db [_ property]]
+   (assoc-in db [:fishes (keyword property)] property)))

@@ -17,6 +17,11 @@
    (:fishes db)))
 
 (re-frame/reg-sub
+ :fish-name
+ (fn [db _]
+   (get-in db [:fishes id :name]:fishes db )))
+
+(re-frame/reg-sub
  :orders
  (fn [db _]
    (:orders db)))
