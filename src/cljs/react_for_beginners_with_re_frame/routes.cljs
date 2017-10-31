@@ -5,8 +5,7 @@
             [goog.events :as gevents]
             [goog.history.EventType :as EventType]
             [re-frame.core :as re-frame]
-            [react-for-beginners-with-re-frame.events :as events]
-            ))
+            [react-for-beginners-with-re-frame.events :as events]))
 
 (defn hook-browser-navigation! []
   (doto (History.)
@@ -21,11 +20,8 @@
   ;; --------------------
   ;; define routes here
   (defroute "/" []
-    (re-frame/dispatch [::events/set-active-panel :home-panel]))
+    (re-frame/dispatch [::events/set-active-panel :store-picker]))
 
-  (defroute "/about" []
-    (re-frame/dispatch [::events/set-active-panel :about-panel]))
-
-
-  ;; --------------------
+  (defroute "/catch-of-the-day" []
+    (re-frame/dispatch [::events/set-active-panel :catch-of-the-day]));; --------------------
   (hook-browser-navigation!))

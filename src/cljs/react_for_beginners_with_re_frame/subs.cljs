@@ -10,3 +10,13 @@
  ::active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+ :fishes
+ (fn [db _]
+   (:fishes db)))
+
+(re-frame/reg-sub
+ :orders
+ (fn [db _]
+   (:orders db)))
