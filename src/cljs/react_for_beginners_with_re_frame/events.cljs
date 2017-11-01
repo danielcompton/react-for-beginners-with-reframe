@@ -17,6 +17,8 @@
  (fn [db _]
    (assoc db :fishes db/sample-fishes)))
 
+;; fishes
+
 (re-frame/reg-event-db
  :add-fish
  (fn [db [_ fish]]
@@ -46,7 +48,16 @@
          property (key (second fish))]
      (assoc-in db [:fishes id property] value))))
 
+;; orders
+
 (re-frame/reg-event-db
  :add-to-order
  (fn [db [_ id]]
    (update-in db [:orders (keyword id)] (fnil inc 0))))
+
+(re-frame/reg-event-db
+ :remove-from-order
+ (fn [db [_ id]]
+   (.log js/console "remove")
+   (.log js/console id)
+   (update-in db [:orders] dissoc id)))

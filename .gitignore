@@ -3,4 +3,5 @@
 /*-init.clj
 /resources/public/js/compiled
 /.nrepl*
+/.cljs_rhino_repl
 out

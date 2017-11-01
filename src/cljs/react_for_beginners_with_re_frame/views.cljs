@@ -3,12 +3,16 @@
             [re-frame.core :refer [subscribe dispatch]]
             [react-for-beginners-with-re-frame.subs :as subs]))
 
+
 ;; helpers
+
 
 (defn format-price [price]
   (str "$" (/ price 100)))
 
+
 ;; store-picker
+
 
 (defn store-picker []
   (let [name (subscribe [::subs/name])]
@@ -19,7 +23,9 @@
       [:button {:type "submit"} "Visit Store"]
       [:a {:href "#/catch-of-the-day"} "Visit Store"]]]))
 
+
 ;; header
+
 
 (defn header []
   [:header.top
@@ -31,15 +37,22 @@
    [:h3.tagline
     [:span "Fresh seafood"]]])
 
+
 ;; order
+
 
 (defn order-item [id quant]
   (let [fishes (subscribe [:fishes])
-        name (get-in fishes [id :name])
-        status (get-in fishes [id :status])]
-    [:li
-     [:span quant "lbs " name]
-     [:span.price (format-price (* quant (get-in @fishes [id :price])))]]))
+        name (get-in @fishes [id :name])
+        status (get-in @fishes [id :status])]
+    (if (= (get-in @fishes [id :status]) :available)
+      [:li
+       [:span quant "lbs " name
+        [:button {:on-click #(dispatch [:remove-from-order id])} "\u00D7"]]
+       [:span.price (format-price (* quant (get-in @fishes [id :price])))]]
+      [:li
+       [:span (str "Sorry, " (if name name "fish") " no longer available")
+        [:button {:on-click #(dispatch [:remove-from-order id])} "\u00D7"]]])))
 
 (defn total []
   (let [fishes (subscribe [:fishes])
@@ -57,9 +70,11 @@
       (for [[id quant] @orders]
         ^{:key id} [order-item id quant])
       [:li.total
-       [:strong "Total:"]  (total)]]]))
+       [:strong "Total:"]  (format-price (total))]]]))
+
 
 ;; inventory
+
 
 (defn add-fish-form []
   (let [default {:id "" :name "" :price 0 :status :available :desc "" :image ""}
@@ -107,7 +122,7 @@
      [:select {:value status
                :name "status"
                :on-change #(dispatch [:edit-fish {:id id
-                                                  :status (-> % .-target .-value)}])}
+                                                  :status (keyword  (-> % .-target .-value))}])}
       [:option {:value "available"} "Fresh!"]
       [:option {:value "unavailable"} "Sold Out!"]]
      [:textarea {:name "desc"
@@ -132,7 +147,9 @@
      [add-fish-form]
      [:button {:on-click #(dispatch [:load-sample-fishes] )} "Load Sample Fishes"]]))
 
+
 ;; fishes
+
 
 (defn fish [id name price status desc image]
   (let [orders (subscribe [:orders])]
@@ -145,7 +162,9 @@
                :on-click #(dispatch [:add-to-order id])}
       (if (= status :available) "Add To Order" "Sold Out!")]]))
 
+
 ;; catch-of-the-day
+
 
 (defn catch-of-the-day []
   (let [fishes (subscribe [:fishes])]
@@ -159,6 +178,7 @@
      [inventory]]))
 
 ;; main
+
 
 (defn- panels [panel-name]
   (case panel-name
