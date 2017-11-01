@@ -17,6 +17,13 @@
  (fn [db _]
    (assoc db :fishes db/sample-fishes)))
 
+;; routes
+
+;;(re-frame/reg-event-db
+;; :go-to-store
+;; (fn [db [_ store-id]]
+;;   (assoc db :active)))
+
 ;; fishes
 
 (re-frame/reg-event-db
@@ -58,6 +65,4 @@
 (re-frame/reg-event-db
  :remove-from-order
  (fn [db [_ id]]
-   (.log js/console "remove")
-   (.log js/console id)
    (update-in db [:orders] dissoc id)))

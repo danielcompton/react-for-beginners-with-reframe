@@ -22,6 +22,6 @@
   (defroute "/" []
     (re-frame/dispatch [::events/set-active-panel :store-picker]))
 
-  (defroute "/catch-of-the-day" []
-    (re-frame/dispatch [::events/set-active-panel :catch-of-the-day]));; --------------------
+  (defroute "/catch-of-the-day/:store-id" [store-id]
+    (re-frame/dispatch [::events/set-active-panel :catch-of-the-day]))
   (hook-browser-navigation!))

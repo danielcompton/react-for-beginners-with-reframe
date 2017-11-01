@@ -13,15 +13,18 @@
 
 ;; store-picker
 
+(defn go-to-store [event store-id]
+  (.preventDefault event)
+  (dispatch [:go-to-store store-id]))
 
 (defn store-picker []
   (let [name (subscribe [::subs/name])]
     [:div
      [:form.store-selector {:on-submit #(.log js/console "store")}
       [:h2 "Please Enter A Store"]
-      [:input {:type "text" :required true :default-value "first-store"}]
-      [:button {:type "submit"} "Visit Store"]
-      [:a {:href "#/catch-of-the-day"} "Visit Store"]]]))
+      [:input {:type "text" :required true :default-value @name}]
+      ;; [:button {:type "submit"} "Visit Store"]
+      [:a {:href (str "#/catch-of-the-day/" @name)} "Visit Store"]]]))
 
 
 ;; header

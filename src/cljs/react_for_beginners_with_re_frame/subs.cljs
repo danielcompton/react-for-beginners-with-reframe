@@ -19,7 +19,6 @@
 (re-frame/reg-sub
  :edit-fish
  (fn [db id]
-   (.log js/console id) ;; must pass keyword
    (get-in db [:fishes id :name] )))
 
 (re-frame/reg-sub
