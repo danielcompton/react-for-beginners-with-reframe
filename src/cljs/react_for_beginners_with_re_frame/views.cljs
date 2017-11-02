@@ -20,10 +20,10 @@
 (defn store-picker []
   (let [name (subscribe [::subs/name])]
     [:div
-     [:form.store-selector {:on-submit #(.log js/console "store")}
+     [:form.store-selector {:on-submit #(go-to-store % @name)}
       [:h2 "Please Enter A Store"]
       [:input {:type "text" :required true :default-value @name}]
-      ;; [:button {:type "submit"} "Visit Store"]
+      [:button {:type "submit"} "Visit Store"]
       [:a {:href (str "#/catch-of-the-day/" @name)} "Visit Store"]]]))
 
 

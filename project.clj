@@ -5,8 +5,8 @@
                  [re-frame "0.10.2"]
                  [secretary "1.2.3"]]
 
+  :jvm-opts ["--add-modules" "java.xml.bind"]
   :plugins [[lein-cljsbuild "1.1.5"]]
-
   :min-lein-version "2.5.3"
 
   :source-paths ["src/clj"]
