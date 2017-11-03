@@ -1,9 +1,39 @@
-(ns react-for-beginners-with-re-frame.db)
+(ns react-for-beginners-with-re-frame.db
+  (:require [cljs.reader]
+            [cljs.spec.alpha :as s]
+            [re-frame.core :as re-frame]))
+
+
+;; -- Spec --
+
+
+(s/def ::id string?)
+(s/def ::desc string?)
+(s/def ::name string?)
+(s/def ::price int?)
+(s/def ::status keyword?)
+(s/def ::fish (s/keys :req-un [::id ::desc ::name ::price ::status]))
+(s/def ::fishes (s/and (s/map-of ::id ::fish)
+                       #(instance? PersistantTreeMap %)))
+
+(s/def ::id string?)
+(s/def ::quantity int?)
+(s/def ::orders (s/and (s/map-of ::id ::quantity)
+                       #(instance? PersistantTreeMap %)))
+
+(s/def ::db (s/keys :req-un [::fishes ::orders]))
+
+
+;; -- Defauly DB values --
+
 
 (def default-db
   {:name "re-frame"
    :fishes (sorted-map)
    :orders (sorted-map)})
+
+;; -- Sample Fishes --
+
 
 (def sample-fishes {:fish-1 {:id     "fish-1"
                              :desc   "Everyones favorite white fish. We will cut it to the size you need and ship it."

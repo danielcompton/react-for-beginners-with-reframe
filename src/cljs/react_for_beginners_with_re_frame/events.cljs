@@ -19,10 +19,11 @@
 
 ;; routes
 
-;;(re-frame/reg-event-db
-;; :go-to-store
-;; (fn [db [_ store-id]]
-;;   (assoc db :active)))
+(re-frame/reg-event-db
+ :go-to-store
+ (fn [db [_ store-id]]
+   (.log js/console store-id)
+   (assoc db :active-panel :catch-of-the-day)))
 
 ;; fishes
 
