@@ -14,12 +14,12 @@
 (s/def ::status keyword?)
 (s/def ::fish (s/keys :req-un [::id ::desc ::name ::price ::status]))
 (s/def ::fishes (s/and (s/map-of ::id ::fish)
-                       #(instance? PersistantTreeMap %)))
+                       #_#(instance? PersistantTreeMap %)))
 
 (s/def ::id string?)
 (s/def ::quantity int?)
 (s/def ::orders (s/and (s/map-of ::id ::quantity)
-                       #(instance? PersistantTreeMap %)))
+                       #_#(instance? PersistantTreeMap %)))
 
 (s/def ::db (s/keys :req-un [::fishes ::orders]))
 
