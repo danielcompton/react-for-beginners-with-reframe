@@ -24,6 +24,7 @@
       [:h2 "Please Enter A Store"]
       [:input {:type "text" :required true :default-value @name}]
       [:button {:type "submit"} "Visit Store"]
+      [:button {:on-click #(dispatch [:handler-with-http])} "Get AJAX data"]
       [:a {:href (str "#/catch-of-the-day/" @name)} "Visit Store"]]]))
 
 

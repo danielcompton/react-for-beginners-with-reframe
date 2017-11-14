@@ -4,4 +4,6 @@
 /resources/public/js/compiled
 /.nrepl*
 /.cljs_rhino_repl
+/.idea
+.idea
 out

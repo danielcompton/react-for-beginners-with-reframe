@@ -1,6 +1,8 @@
 (ns react-for-beginners-with-re-frame.events
   (:require [re-frame.core :as re-frame]
-            [react-for-beginners-with-re-frame.db :as db]))
+            [react-for-beginners-with-re-frame.db :as db]
+            [day8.re-frame.http-fx]
+            [ajax.core :as ajax]))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -16,6 +18,22 @@
  :load-sample-fishes
  (fn [db _]
    (assoc db :fishes db/sample-fishes)))
+
+(re-frame/reg-event-fx
+ :handler-with-http
+ (fn [{:keys [db]} _]
+   {:db (assoc db :show-twirly true)
+    :http-xhrio {:method :get
+                 :uri "https://gist.githubusercontent.com/jacekschae/78d981877af42bbeb949a16e11ff6a23/raw/e863da8d4e6dd3cebdbc79b490a5b61e31b3b811/fishes.json"
+                 :timeout 8000
+                 :response-format (ajax/json-response-format {:keyword? true})
+                 :on-success [:good-http-result]
+                 :on-failure [:bad-http-result]}}))
+
+(re-frame/reg-event-db
+ :good-http-result
+ (fn [db [_ result]]
+   (.log js/console result)))
 
 ;; routes
 
