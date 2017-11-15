@@ -2,7 +2,11 @@
   (:require [re-frame.core :as re-frame]
             [react-for-beginners-with-re-frame.db :as db]
             [day8.re-frame.http-fx]
-            [ajax.core :as ajax]))
+            [ajax.core :as ajax]
+            [cognitect.transit :as t]))
+
+;; helpers
+(def r (t/reader :json))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -20,20 +24,23 @@
    (assoc db :fishes db/sample-fishes)))
 
 (re-frame/reg-event-fx
- :handler-with-http
+ :get-fishes-ajax
  (fn [{:keys [db]} _]
    {:db (assoc db :show-twirly true)
     :http-xhrio {:method :get
-                 :uri "https://gist.githubusercontent.com/jacekschae/78d981877af42bbeb949a16e11ff6a23/raw/e863da8d4e6dd3cebdbc79b490a5b61e31b3b811/fishes.json"
+                 :uri "https://gist.githubusercontent.com/jacekschae/3260876f7ab279adb0a6060ae2a7cb43/raw/22a67bbe7bee54fedc9af35e5b65c39617b4f514/fishes.json"
                  :timeout 8000
                  :response-format (ajax/json-response-format {:keyword? true})
-                 :on-success [:good-http-result]
+                 :on-success [:load-sample-fishes-ajax]
                  :on-failure [:bad-http-result]}}))
 
 (re-frame/reg-event-db
- :good-http-result
+ :load-sample-fishes-ajax
  (fn [db [_ result]]
-   (.log js/console result)))
+     (.log js/console (t/read r result))
+   (let [fishes (t/read r result)]
+     (assoc db :fishes fishes))))
+
 
 ;; routes
 

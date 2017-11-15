@@ -13,6 +13,7 @@
 
 ;; store-picker
 
+
 (defn go-to-store [event store-id]
   (.preventDefault event)
   (dispatch [:go-to-store store-id]))
@@ -24,7 +25,7 @@
       [:h2 "Please Enter A Store"]
       [:input {:type "text" :required true :default-value @name}]
       [:button {:type "submit"} "Visit Store"]
-      [:button {:on-click #(dispatch [:handler-with-http])} "Get AJAX data"]
+      [:button {:on-click #(dispatch [:get-fishes-ajax])} "Get AJAX data"]
       [:a {:href (str "#/catch-of-the-day/" @name)} "Visit Store"]]]))
 
 

@@ -5,7 +5,8 @@
                  [re-frame "0.10.2"]
                  [cljs-ajax "0.5.8"]
                  [day8.re-frame/http-fx "0.1.4"]
-                 [secretary "1.2.3"]]
+                 [secretary "1.2.3"]
+                 [com.cognitect/transit-cljs "0.8.243"]]
 
   :jvm-opts ["--add-modules" "java.xml.bind"]
   :plugins [[lein-cljsbuild "1.1.5"]]
@@ -29,10 +30,8 @@
    {:dependencies [[binaryage/devtools "0.9.4"]
                    [cljsjs/d3 "4.3.0-5"]
                    [day8.re-frame/trace "0.1.7"]
-                   
                    [figwheel-sidecar "0.5.13"]
                    [com.cemerick/piggieback "0.2.2"]]
-
     :plugins      [[lein-figwheel "0.5.13"]
                    [lein-pdo "0.1.1"]]}}
 
@@ -49,8 +48,7 @@
                     :preloads             [devtools.preload
                                            day8.re-frame.trace.preload]
                     :closure-defines      {"re_frame.trace.trace_enabled_QMARK_" true}
-                    :external-config      {:devtools/config {:features-to-install :all}}
-                    }}
+                    :external-config      {:devtools/config {:features-to-install :all}}}}
 
     {:id           "min"
      :source-paths ["src/cljs"]
@@ -58,9 +56,4 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}
-                    :pretty-print    false}}
-
-
-    ]}
-
-  )
+                    :pretty-print    false}}]})
