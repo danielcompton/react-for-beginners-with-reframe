@@ -25,9 +25,18 @@
 
 (re-frame/reg-event-fx
  :get-fishes-ajax
- (fn [{:keys [db]} _]
-   {:db (assoc db :show-twirly true)
-    :http-xhrio {:method :get
+ (fn [_ _]
+   {:http-xhrio {:method :get
+                 :uri "https://gist.githubusercontent.com/jacekschae/3260876f7ab279adb0a6060ae2a7cb43/raw/d4723e628fc75bab19206e5cb4973ce9bbcc4a7f/fishes.json"
+                 :timeout 8000
+                 :response-format (ajax/json-response-format {:keyword? true})
+                 :on-success [:load-sample-fishes-ajax]
+                 :on-failure [:bad-http-result]}}))
+
+(re-frame/reg-event-fx
+ :get-fishes-ajax-string
+ (fn [_ _]
+   {:http-xhrio {:method :get
                  :uri "https://gist.githubusercontent.com/jacekschae/3260876f7ab279adb0a6060ae2a7cb43/raw/22a67bbe7bee54fedc9af35e5b65c39617b4f514/fishes.json"
                  :timeout 8000
                  :response-format (ajax/json-response-format {:keyword? true})

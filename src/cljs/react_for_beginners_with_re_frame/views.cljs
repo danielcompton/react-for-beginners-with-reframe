@@ -25,7 +25,6 @@
       [:h2 "Please Enter A Store"]
       [:input {:type "text" :required true :default-value @name}]
       [:button {:type "submit"} "Visit Store"]
-      [:button {:on-click #(dispatch [:get-fishes-ajax])} "Get AJAX data"]
       [:a {:href (str "#/catch-of-the-day/" @name)} "Visit Store"]]]))
 
 
@@ -150,7 +149,9 @@
      (for [{:keys [id name price status desc image]} (vals @fishes)]
        ^{:key id} [edit-fish-form id name price status image desc])
      [add-fish-form]
-     [:button {:on-click #(dispatch [:load-sample-fishes] )} "Load Sample Fishes"]]))
+     [:button {:on-click #(dispatch [:load-sample-fishes] )} "Load Sample Fishes"][:br]
+     [:button {:on-click #(dispatch [:get-fishes-ajax])} "Get AJAX data"][:br]
+     [:button {:on-click #(dispatch [:get-fishes-ajax-string])} "Get AJAX data String"]]))
 
 
 ;; fishes
