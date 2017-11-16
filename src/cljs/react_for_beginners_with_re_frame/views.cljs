@@ -13,10 +13,15 @@
 
 ;; store-picker
 
+#_(defn go-to-store [event store-id]
+  (.preventDefault event)
+  (set! (.-href js/window.location) (str "#/catch-of-the-day/" store-id))
+  #_(dispatch [:go-to-store store-id]))
+
 
 (defn go-to-store [event store-id]
   (.preventDefault event)
-  (dispatch [:go-to-store store-id]))
+  (set! (.-href js/window.location) (str "#/catch-of-the-day/" store-id)))
 
 (defn store-picker []
   (let [name (subscribe [::subs/name])]
@@ -147,7 +152,7 @@
     [:div
      [:h2 "Inventory"]
      (for [{:keys [id name price status desc image]} (vals @fishes)]
-       ^{:key id} [edit-fish-form id name price status image desc])
+       ^{:key name} [edit-fish-form id name price status image desc])
      [add-fish-form]
      [:button {:on-click #(dispatch [:load-sample-fishes] )} "Load Sample Fishes"][:br]
      [:button {:on-click #(dispatch [:get-fishes-ajax])} "Get AJAX data"][:br]
@@ -179,7 +184,7 @@
       [header]
       [:ul.list-of-fishes
        (for [{:keys [id name price status desc image]} (vals @fishes)]
-         ^{:key id} [fish id name price status desc image])]]
+         ^{:key name} [fish id name price status desc image])]]
      [order]
      [inventory]]))
 
