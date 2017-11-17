@@ -46,6 +46,7 @@
 (re-frame/reg-event-db
  :load-sample-fishes-ajax
  (fn [db [_ result]]
+   (.log js/console result)
      (.log js/console (t/read r result))
    (let [fishes (t/read r result)]
      (assoc db :fishes fishes))))
